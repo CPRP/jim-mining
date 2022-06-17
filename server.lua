@@ -53,7 +53,7 @@ end)
 
 RegisterServerEvent('jim-mining:MineReward', function()
     local Player = QBCore.Functions.GetPlayer(source)
-    local randomChance = math.random(1, 3)
+    local randomChance = math.random(1, 1)
     Player.Functions.AddItem('stone', randomChance, false, {["quality"] = nil})
     TriggerClientEvent("inventory:client:ItemBox", source, QBCore.Shared.Items["stone"], "add", randomChance)
 end)
