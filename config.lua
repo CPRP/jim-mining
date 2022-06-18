@@ -125,13 +125,13 @@ Config.MineLights = {
 Config.Items = {
     label = "Mining Store",  slots = 7,
     items = {
-	[1] = { name = "water_bottle", price = 0, amount = 100, info = {}, type = "item", slot = 1, },
-	[2] = { name = "sandwich", price = 0, amount = 250, info = {}, type = "item", slot = 2, },
-	[3] = { name = "bandage", price = 0, amount = 100, info = {}, type = "item", slot = 3, },
-	[4] = { name = "weapon_flashlight", price = 0, amount = 100, info = {}, type = "item", slot = 4, }, 
-	[5] = { name = "drill",	price = 0, amount = 100, info = {}, type = "item", slot = 5, }, 
-	[6] = { name = "handdrill",	price = 0, amount = 100, info = {}, type = "item",	slot = 6, },
-	[7] = { name = "drillbit", price = 0, amount = 100,	info = {}, type = "item", slot = 7, }, }		
+	[1] = { name = "water_bottle", price = 10, amount = 100, info = {}, type = "item", slot = 1, },
+	[2] = { name = "sandwich", price = 10, amount = 250, info = {}, type = "item", slot = 2, },
+	[3] = { name = "bandage", price = 20, amount = 100, info = {}, type = "item", slot = 3, },
+	[4] = { name = "weapon_flashlight", price = 50, amount = 100, info = {}, type = "item", slot = 4, }, 
+	[5] = { name = "drill",	price = 1000, amount = 100, info = {}, type = "item", slot = 5, }, 
+	[6] = { name = "handdrill",	price = 500, amount = 100, info = {}, type = "item",	slot = 6, },
+	[7] = { name = "drillbit", price = 175, amount = 100,	info = {}, type = "item", slot = 7, }, }		
 }
 
 Crafting = {}
