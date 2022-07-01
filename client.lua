@@ -76,47 +76,47 @@ CreateThread(function()
 	end
 	Targets["MineShaft"] =
 	exports['qb-target']:AddCircleZone("MineShaft", vector3(Config.Locations['Mine'].location.x, Config.Locations['Mine'].location.y, Config.Locations['Mine'].location.z), 2.0, { name="MineShaft", debugPoly=Config.Debug, useZ=true, }, 
-	{ options = { { event = "jim-mining:openShop", icon = "fas fa-certificate", label = Loc[Config.Lan].info["browse_store"], }, }, 
+	{ options = { { event = "jim-mining:openShop", icon = "fas fa-certificate", label = Loc[Config.Lan].info["browse_store"], job = Config.Job }, }, 
 		distance = 2.0 })
 	Targets["Quarry"] =
 	exports['qb-target']:AddCircleZone("Quarry", vector3(Config.Locations['Quarry'].location.x, Config.Locations['Quarry'].location.y, Config.Locations['Quarry'].location.z), 2.0, { name="Quarry", debugPoly=Config.Debug, useZ=true, }, 
-	{ options = { { event = "jim-mining:openShop", icon = "fas fa-certificate", label = Loc[Config.Lan].info["browse_store"], }, },
+	{ options = { { event = "jim-mining:openShop", icon = "fas fa-certificate", label = Loc[Config.Lan].info["browse_store"], job = Config.Job }, },
 		distance = 2.0
 	})
 	--Smelter to turn stone into ore
 	Targets["Smelter"] =
 	exports['qb-target']:AddCircleZone("Smelter", vector3(Config.Locations['Smelter'].location.x, Config.Locations['Smelter'].location.y, Config.Locations['Smelter'].location.z), 3.0, { name="Smelter", debugPoly=Config.Debug, useZ=true, }, 
-	{ options = { { event = "jim-mining:CraftMenu", icon = "fas fa-certificate", label = Loc[Config.Lan].info["use_smelter"], craftable = Crafting.SmeltMenu }, },
+	{ options = { { event = "jim-mining:CraftMenu", icon = "fas fa-certificate", label = Loc[Config.Lan].info["use_smelter"], craftable = Crafting.SmeltMenu, job = Config.Job }, },
 		distance = 10.0
 	})
 	--Ore Buyer
 	Targets["Buyer"] =
 	exports['qb-target']:AddCircleZone("Buyer", vector3(Config.Locations['Buyer'].location.x, Config.Locations['Buyer'].location.y, Config.Locations['Buyer'].location.z), 2.0, { name="Buyer", debugPoly=Config.Debug, useZ=true, }, 
-	{ options = { { event = "jim-mining:SellOre", icon = "fas fa-certificate", label = Loc[Config.Lan].info["sell_ores"], }, },
+	{ options = { { event = "jim-mining:SellOre", icon = "fas fa-certificate", label = Loc[Config.Lan].info["sell_ores"], job = Config.Job }, },
 		distance = 2.0
 	})
 	--Jewel Cutting Bench
 	Targets["JewelCut"] =
 	exports['qb-target']:AddCircleZone("JewelCut", vector3(Config.Locations['JewelCut'].location.x, Config.Locations['JewelCut'].location.y, Config.Locations['JewelCut'].location.z), 2.0,{ name="JewelCut", debugPoly=Config.Debug, useZ=true, }, 
-	{ options = { { event = "jim-mining:JewelCut", icon = "fas fa-certificate", label = Loc[Config.Lan].info["jewelcut"], }, },
+	{ options = { { event = "jim-mining:JewelCut", icon = "fas fa-certificate", label = Loc[Config.Lan].info["jewelcut"], job = Config.Job }, },
 		distance = 2.0
 	})
 	--Jewel Buyer
 	Targets["JewelBuyer"] =
 	exports['qb-target']:AddCircleZone("JewelBuyer",vector3(Config.Locations['Buyer2'].location.x, Config.Locations['Buyer2'].location.y, Config.Locations['Buyer2'].location.z), 2.0, { name="JewelBuyer", debugPoly=Config.Debug, useZ=true, }, 
-	{ options = { { event = "jim-mining:JewelSell", icon = "fas fa-certificate", label = Loc[Config.Lan].info["jewelbuyer"], },	},
+	{ options = { { event = "jim-mining:JewelSell", icon = "fas fa-certificate", label = Loc[Config.Lan].info["jewelbuyer"], job = Config.Job }, },
 		distance = 2.0
 	})
 	--Cracking Bench
 	Targets["CrackingBench"] =
 	exports['qb-target']:AddCircleZone("CrackingBench", vector3(Config.Locations['Cracking'].location.x, Config.Locations['Cracking'].location.y, Config.Locations['Cracking'].location.z), 2.0, { name="CrackingBench", debugPoly=Config.Debug, useZ=true, }, 
-	{ options = { { event = "jim-mining:CrackStart", icon = "fas fa-certificate", label = Loc[Config.Lan].info["crackingbench"], },	},
+	{ options = { { event = "jim-mining:CrackStart", icon = "fas fa-certificate", label = Loc[Config.Lan].info["crackingbench"], job = Config.Job }, },
 		distance = 2.0
 	})
 	for k,v in pairs(Config.OrePositions) do
 		Targets["ore"..k] =
 		exports['qb-target']:AddCircleZone("ore"..k, v.coords, 2.0, { name="ore"..k, debugPoly=Config.Debug, useZ=true, }, 
-		{ options = { { event = "jim-mining:MineOre", icon = "fas fa-certificate", label = Loc[Config.Lan].info["mine_ore"], },	},
+		{ options = { { event = "jim-mining:MineOre", icon = "fas fa-certificate", label = Loc[Config.Lan].info["mine_ore"], job = Config.Job }, },
 			distance = 2.5
 		})
 	end
@@ -124,7 +124,13 @@ end)
 
 --------------------------------------------------------
 --Mining Store Opening
-RegisterNetEvent('jim-mining:openShop', function() TriggerServerEvent("inventory:server:OpenInventory", "shop", "mine", Config.Items) end)
+RegisterNetEvent('jim-mining:openShop', function() 
+	if Config.JimShops then 
+		TriggerServerEvent("jim-shops:ShopOpen", "shop", "mine", Config.Items)
+	else
+		TriggerServerEvent("inventory:server:OpenInventory", "shop", "mine", Config.Items)
+	end
+end)
 ------------------------------------------------------------
 -- Mine Ore Command / Animations
 
@@ -290,11 +296,11 @@ end)
 RegisterNetEvent('jim-mining:SellOre', function()
 	exports['qb-menu']:openMenu({
 		{ header = Loc[Config.Lan].info["header_oresell"], txt = Loc[Config.Lan].info["oresell_txt"], isMenuHeader = true },
-		{ header = "", txt = Loc[Config.Lan].info["close"], params = { event = "jim-mining:CraftMenu:Close" } },
-		{ header = "<img src=nui://"..Config.img..QBCore.Shared.Items["copperore"].image.." width=30px>"..Loc[Config.Lan].info["copper_ore"], txt = Loc[Config.Lan].info["sell_all"].." "..Config.SellItems['copperore'].." "..Loc[Config.Lan].info["sell_each"], params = { event = "jim-mining:SellAnim", args = 'copperore' } },
-		{ header = "<img src=nui://"..Config.img..QBCore.Shared.Items["ironore"].image.." width=30px>"..Loc[Config.Lan].info["iron_ore"], txt = Loc[Config.Lan].info["sell_all"].." "..Config.SellItems['ironore'].." "..Loc[Config.Lan].info["sell_each"], params = { event = "jim-mining:SellAnim", args = 'ironore' } },
-		{ header = "<img src=nui://"..Config.img..QBCore.Shared.Items["goldore"].image.." width=30px>"..Loc[Config.Lan].info["gold_ore"], txt = Loc[Config.Lan].info["sell_all"].." "..Config.SellItems['goldore'].." "..Loc[Config.Lan].info["sell_each"], params = { event = "jim-mining:SellAnim", args = 'goldore' } },
-		{ header = "<img src=nui://"..Config.img..QBCore.Shared.Items["carbon"].image.." width=30px>"..Loc[Config.Lan].info["carbon"], txt = Loc[Config.Lan].info["sell_all"].." "..Config.SellItems['carbon'].." "..Loc[Config.Lan].info["sell_each"], params = { event = "jim-mining:SellAnim", args = 'carbon' } }, 
+		{ icon = "fas fa-circle-xmark", header = "", txt = Loc[Config.Lan].info["close"], params = { event = "jim-mining:CraftMenu:Close" } },
+		{ icon = "copperore", header = "<img src=nui://"..Config.img..QBCore.Shared.Items["copperore"].image.." width=30px onerror='this.onerror=null; this.remove();'>"..Loc[Config.Lan].info["copper_ore"], txt = Loc[Config.Lan].info["sell_all"].." "..Config.SellItems['copperore'].." "..Loc[Config.Lan].info["sell_each"], params = { event = "jim-mining:SellAnim", args = 'copperore' } },
+		{ icon = "ironore", header = "<img src=nui://"..Config.img..QBCore.Shared.Items["ironore"].image.." width=30px onerror='this.onerror=null; this.remove();'>"..Loc[Config.Lan].info["iron_ore"], txt = Loc[Config.Lan].info["sell_all"].." "..Config.SellItems['ironore'].." "..Loc[Config.Lan].info["sell_each"], params = { event = "jim-mining:SellAnim", args = 'ironore' } },
+		{ icon = "goldore", header = "<img src=nui://"..Config.img..QBCore.Shared.Items["goldore"].image.." width=30px onerror='this.onerror=null; this.remove();'>"..Loc[Config.Lan].info["gold_ore"], txt = Loc[Config.Lan].info["sell_all"].." "..Config.SellItems['goldore'].." "..Loc[Config.Lan].info["sell_each"], params = { event = "jim-mining:SellAnim", args = 'goldore' } },
+		{ icon = "carbon", header = "<img src=nui://"..Config.img..QBCore.Shared.Items["carbon"].image.." width=30px onerror='this.onerror=null; this.remove();'>"..Loc[Config.Lan].info["carbon"], txt = Loc[Config.Lan].info["sell_all"].." "..Config.SellItems['carbon'].." "..Loc[Config.Lan].info["sell_each"], params = { event = "jim-mining:SellAnim", args = 'carbon' } }, 
 	})
 end)
 ------------------------
@@ -381,7 +387,7 @@ RegisterNetEvent('jim-mining:CraftMenu:Close', function() exports['qb-menu']:clo
 RegisterNetEvent('jim-mining:JewelCut', function()
     exports['qb-menu']:openMenu({
 	{ header = Loc[Config.Lan].info["craft_bench"], txt = Loc[Config.Lan].info["req_drill_bit"], isMenuHeader = true },
-	{ header = "", txt = Loc[Config.Lan].info["close"], params = { event = "jim-mining:CraftMenu:Close" } },
+	{ icon = "fas fa-circle-xmark", header = "", txt = Loc[Config.Lan].info["close"], params = { event = "jim-mining:CraftMenu:Close" } },
 	{ header = Loc[Config.Lan].info["gem_cut"],	txt = Loc[Config.Lan].info["gem_cut_section"], params = { event = "jim-mining:CraftMenu", args = { craftable = Crafting.GemCut, ret = true  } } },
 	{ header = Loc[Config.Lan].info["make_ring"], txt = Loc[Config.Lan].info["ring_craft_section"], params = { event = "jim-mining:CraftMenu", args = { craftable = Crafting.RingCut, ret = true  } } },
 	{ header = Loc[Config.Lan].info["make_neck"], txt = Loc[Config.Lan].info["neck_craft_section"], params = { event = "jim-mining:CraftMenu", args = { craftable = Crafting.NeckCut, ret = true } } },
@@ -392,10 +398,10 @@ RegisterNetEvent('jim-mining:CraftMenu', function(data)
 	local CraftMenu = {}
 	if data.ret then 
 		CraftMenu[#CraftMenu + 1] = { header = Loc[Config.Lan].info["craft_bench"], txt = Loc[Config.Lan].info["req_drill_bit"], isMenuHeader = true }
-		CraftMenu[#CraftMenu + 1] = { header = "", txt = Loc[Config.Lan].info["return"], params = { event = "jim-mining:JewelCut" } }
+		CraftMenu[#CraftMenu + 1] = { icon = "fas fa-circle-arrow-left", header = "", txt = Loc[Config.Lan].info["return"], params = { event = "jim-mining:JewelCut" } }
 	else 
 		CraftMenu[#CraftMenu + 1] = { header = Loc[Config.Lan].info["smelter"], txt = Loc[Config.Lan].info["smelt_ores"], isMenuHeader = true }
-		CraftMenu[#CraftMenu + 1] = { header = "", txt = Loc[Config.Lan].info["close"], params = { event = "jim-mining:CraftMenu:Close" } } 
+		CraftMenu[#CraftMenu + 1] = { icon = "fas fa-circle-xmark", header = "", txt = Loc[Config.Lan].info["close"], params = { event = "jim-mining:CraftMenu:Close" } } 
 	end
 		for i = 1, #data.craftable do
 			for k, v in pairs(data.craftable[i]) do
@@ -411,7 +417,7 @@ RegisterNetEvent('jim-mining:CraftMenu', function(data)
 						text = text.."- "..QBCore.Shared.Items[l].label..number.."<br>"
 						settext = text
 					end
-					CraftMenu[#CraftMenu + 1] = { header = "<img src=nui://"..Config.img..QBCore.Shared.Items[k].image.." width=35px> "..setheader, txt = settext, params = { event = "jim-mining:MakeItem", args = { item = k, tablenumber = i, craftable = data.craftable, ret = data.ret } } }
+					CraftMenu[#CraftMenu + 1] = { icon = k, header = "<img src=nui://"..Config.img..QBCore.Shared.Items[k].image.." width=30px onerror='this.onerror=null; this.remove();'> "..setheader, txt = settext, params = { event = "jim-mining:MakeItem", args = { item = k, tablenumber = i, craftable = data.craftable, ret = data.ret } } }
 					settext, amount, setheader = nil
 				end
 			end
