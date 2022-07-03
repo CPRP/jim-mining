@@ -11,8 +11,8 @@ Config = {
 	img = "aj-inventory/html/images/", --Set this to the image directory of your inventory script or "nil" if using newer qb-menu
 	CheckMarks = true, -- shows checkmarks if user has the materials to craft an item, set false if causing lag.
 	Lan = "en", -- Pick your language here
-	JimMenu = false, -- Set this to true if using update qb-menu with icons
-	JimShops = false, -- Set this to true if using jim-shops
+	JimMenu = true, -- Set this to true if using update qb-menu with icons
+	JimShops = true, -- Set this to true if using jim-shops
 	Job = nil, -- set this to a job role eg "miner" or nil for no job
 	--Lighting for mines
 	HangingLights = false, -- if false, will spawn work lights. if true will spawn hanging lights
@@ -151,93 +151,60 @@ Config = {
 	},
 
 ------------------------------------------------------------
-<<<<<<< HEAD
-Config.SellItems = { -- Selling Prices
-    	['copperore'] = 100,
-   	['goldore'] = 150,
-    	['ironore'] = 75,
-    	['carbon'] = 50,
-    
-    	['goldbar'] = 500,
-    
-    	['uncut_emerald'] = 100,
-    	['uncut_ruby'] = 200,
-    	['uncut_diamond'] = 300,
-    	['uncut_sapphire'] = 400,
 
-    	['emerald'] = 200,
-    	['ruby'] = 350,
-    	['diamond'] = 500,
-    	['sapphire'] = 600,
+	SellItems = { -- Selling Prices
+		['copperore'] = 100,
+		['goldore'] = 150,
+		['silverore'] = 125,
+		['ironore'] = 75,
+		['carbon'] = 50,
+		
+		['goldingot'] = 50,
+		['silveringot'] = 50,
+		
+    		['uncut_emerald'] = 100,
+    		['uncut_ruby'] = 200,
+    		['uncut_diamond'] = 300,
+    		['uncut_sapphire'] = 400,
 
-    	['diamond_ring'] = 600,
-    	['emerald_ring'] = 750,
-    	['ruby_ring'] = 1000,
-    	['sapphire_ring'] = 1150,
+    		['emerald'] = 200,
+    		['ruby'] = 350,
+    		['diamond'] = 500,
+    		['sapphire'] = 600,
 
-    	['diamond_necklace'] = 1200,
-    	['emerald_necklace'] = 1500,
-    	['ruby_necklace'] = 2000,
-    	['sapphire_necklace'] = 2300,
+    		['diamond_ring'] = 600,
+    		['emerald_ring'] = 750,
+    		['ruby_ring'] = 1000,
+    		['sapphire_ring'] = 1150,
+		['diamond_ring_silver'] = 600,
+		['emerald_ring_silver'] = 750,
+		['ruby_ring_silver'] = 1000,
+		['sapphire_ring_silver'] = 1150,
+
+    		['diamond_necklace'] = 1200,
+    		['emerald_necklace'] = 1500,
+    		['ruby_necklace'] = 2000,
+    		['sapphire_necklace'] = 2300,
+		['diamond_necklace_silver'] = 1200,
+		['emerald_necklace_silver'] = 1500,
+		['ruby_necklace_silver'] = 2000,
+		['sapphire_necklace_silver'] = 2300,
+		
+		['diamond_earring'] = 400,
+		['emerald_earring'] = 550,
+		['ruby_earring'] = 800,
+		['sapphire_earring'] = 950,
+		['diamond_earring_silver'] = 400,
+		['emerald_earring_silver'] = 550,
+		['ruby_earring_silver'] = 800,
+		['sapphire_earring_silver'] = 950,
 
     	['gold_ring'] = 150,
     	['goldchain'] = 200,
-    	-- ['10kgoldchain'] = 100,
-=======
-	SellItems = { -- Selling Prices
-		['copperore'] = 100,
-		['goldore'] = 100,
-		['silverore'] = 100,
-		['ironore'] = 100,
-		['carbon'] = 100,
-		
-		['goldingot'] = 100,
-		['silveringot'] = 100,
-		
-		['uncut_emerald'] = 100,
-		['uncut_ruby'] = 100,
-		['uncut_diamond'] = 100,
-		['uncut_sapphire'] = 100,
-
-		['emerald'] = 100,
-		['ruby'] = 100,
-		['diamond'] = 100,
-		['sapphire'] = 100,
-
-		['diamond_ring'] = 100,
-		['emerald_ring'] = 100,
-		['ruby_ring'] = 100,
-		['sapphire_ring'] = 100,
-		['diamond_ring_silver'] = 100,
-		['emerald_ring_silver'] = 100,
-		['ruby_ring_silver'] = 100,
-		['sapphire_ring_silver'] = 100,
-
-		['diamond_necklace'] = 100,
-		['emerald_necklace'] = 100,
-		['ruby_necklace'] = 100,
-		['sapphire_necklace'] = 100,
-		['diamond_necklace_silver'] = 100,
-		['emerald_necklace_silver'] = 100,
-		['ruby_necklace_silver'] = 100,
-		['sapphire_necklace_silver'] = 100,
-		
-		['diamond_earring'] = 100,
-		['emerald_earring'] = 100,
-		['ruby_earring'] = 100,
-		['sapphire_earring'] = 100,
-		['diamond_earring_silver'] = 100,
-		['emerald_earring_silver'] = 100,
-		['ruby_earring_silver'] = 100,
-		['sapphire_earring_silver'] = 100,
-
-		['gold_ring'] = 100,
-		['goldchain'] = 100,
 		['goldearring'] = 100,
-		['silver_ring'] = 100,
-		['silverchain'] = 100,
+		['silver_ring'] = 150,
+		['silverchain'] = 200,
 		['silverearring'] = 100,
->>>>>>> upstream/main
 
 	},
 
@@ -309,68 +276,22 @@ Config.SellItems = { -- Selling Prices
 
 ------------------------------------------------------------
 --Mining Store Items
-<<<<<<< HEAD
-Config.Items = {
-    label = "Mining Store",  slots = 7,
-    items = {
-	[1] = { name = "water_bottle", price = 10, amount = 100, info = {}, type = "item", slot = 1, },
-	[2] = { name = "sandwich", price = 10, amount = 250, info = {}, type = "item", slot = 2, },
-	[3] = { name = "bandage", price = 20, amount = 100, info = {}, type = "item", slot = 3, },
-	[4] = { name = "weapon_flashlight", price = 50, amount = 100, info = {}, type = "item", slot = 4, }, 
-	[5] = { name = "drill",	price = 1000, amount = 100, info = {}, type = "item", slot = 5, }, 
-	[6] = { name = "handdrill",	price = 500, amount = 100, info = {}, type = "item",	slot = 6, },
-	[7] = { name = "drillbit", price = 175, amount = 100,	info = {}, type = "item", slot = 7, }, }		
-}
-
-Crafting = {}
-Crafting.SmeltMenu = {
-	[1] = { ["copper"] = { ["copperore"] = 1 }, ['amount'] = 4 },
-	[2] = { ["goldbar"] = { ["goldore"] = 1 } },
-	[3] = { ["goldbar"] = { ["goldchain"] = 2 } },
-	[4] = { ["goldbar"] = { ["10kgoldchain"] = 1 } },
-	[5] = { ["goldbar"] = { ["gold_ring"] = 4 } },
-	[6] = { ["iron"] = { ["ironore"] = 1 } },
-	[7] = { ["steel"] = { ["ironore"] = 1, ["carbon"] = 1 } },
-	--[8] = { ["aluminum"] = { ["can"] = 2, }, ['amount'] = 3 },
-	--[9] = { ["glass"] = { ["bottle"] = 3, }, ['amount'] = 2 },
-}
-Crafting.GemCut = {
-	[1] = { ["emerald"] = { ["uncut_emerald"] = 1, } },
-	[2] = { ["diamond"] = { ["uncut_diamond"] = 1}, },
-	[3] = { ["ruby"] = { ["uncut_ruby"] = 1 }, },
-	[4] = { ["sapphire"] = { ["uncut_sapphire"] = 1 }, },
-}
-Crafting.RingCut = {
-	[1] = { ["gold_ring"] = { ["goldbar"] = 1 }, ['amount'] = 3 },
-	[2] = { ["diamond_ring"] = { ["gold_ring"] = 1, ["diamond"] = 1 }, },
-	[3] = { ["emerald_ring"] = { ["gold_ring"] = 1, ["emerald"] = 1 }, },
-	[4] = { ["ruby_ring"] = { ["gold_ring"] = 1, ["ruby"] = 1 }, },
-	[5] = { ["sapphire_ring"] = { ["gold_ring"] = 1, ["sapphire"] = 1 }, },
-}
-Crafting.NeckCut = {
-	[1] = { ["goldchain"] = { ["goldbar"] = 1 }, ['amount'] = 3  },
-	[2] = { ["10kgoldchain"] = { ["goldbar"] = 1 }, ['amount'] = 2 },
-	[3] = { ["diamond_necklace"] = { ["goldchain"] = 1, ["diamond"] = 1 }, },
-	[4] = { ["ruby_necklace"] = { ["goldchain"] = 1, ["ruby"] = 1 }, },
-	[5] = { ["sapphire_necklace"] = { ["goldchain"] = 1, ["sapphire"] = 1 }, },
-	[6] = { ["emerald_necklace"] = { ["goldchain"] = 1, ["emerald"] = 1 }, },
-=======
 	Items = {
 		label = "Mining Store",  slots = 9,
 		items = {
-			{ name = "water_bottle", price = 0, amount = 100, info = {}, type = "item", slot = 1, },
-			{ name = "sandwich", price = 0, amount = 250, info = {}, type = "item", slot = 2, },
-			{ name = "bandage", price = 0, amount = 100, info = {}, type = "item", slot = 3, },
-			{ name = "weapon_flashlight", price = 0, amount = 100, info = {}, type = "item", slot = 4, }, 
-			{ name = "goldpan", price = 0, amount = 100, info = {}, type = "item", slot = 5, },
+			{ name = "water_bottle", price = 10, amount = 100, info = {}, type = "item", slot = 1, },
+			{ name = "sandwich", price = 10, amount = 250, info = {}, type = "item", slot = 2, },
+			{ name = "bandage", price = 20, amount = 100, info = {}, type = "item", slot = 3, },
+			{ name = "weapon_flashlight", price = 50, amount = 100, info = {}, type = "item", slot = 4, }, 
+			{ name = "goldpan", price = 50, amount = 100, info = {}, type = "item", slot = 5, },
 			{ name = "pickaxe",	price = 100, amount = 100, info = {}, type = "item", slot = 6, },
-			{ name = "miningdrill",	price = 10000, amount = 50, info = {}, type = "item", slot = 7, },
-			{ name = "mininglaser",	price = 60000, amount = 5, info = {}, type = "item", slot = 8, },
-			{ name = "drillbit", price = 0, amount = 100, info = {}, type = "item", slot = 9, },
+			{ name = "miningdrill",	price = 1000, amount = 50, info = {}, type = "item", slot = 7, },
+			{ name = "mininglaser",	price = 3000, amount = 5, info = {}, type = "item", slot = 8, },
+			{ name = "drillbit", price = 175, amount = 100, info = {}, type = "item", slot = 9, },
 		},
 	},
->>>>>>> upstream/main
 }
+
 Crafting = {
 	SmeltMenu = {
 		[1] = { ["copper"] = { ["copperore"] = 1 }, ['amount'] = 4 },
