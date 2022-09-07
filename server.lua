@@ -1,34 +1,6 @@
 local QBCore = exports['qb-core']:GetCoreObject()
 RegisterNetEvent('QBCore:Server:UpdateObject', function() if source ~= '' then return false end QBCore = exports['qb-core']:GetCoreObject() end)
 
-QBCore.Functions.CreateCallback('jim-mining:Check', function(source, cb, item, crafttable)
-	local src = source
-	local Player = QBCore.Functions.GetPlayer(src)
-	local hasitem = true
-	local testtable = {}
-	for k in pairs(crafttable[item]) do
-		testtable[k] = false end
-	for k, v in pairs(crafttable[item]) do
-		if QBCore.Functions.GetPlayer(source).Functions.GetItemByName(k) and QBCore.Functions.GetPlayer(source).Functions.GetItemByName(k).amount >= v then
-			testtable[k] = true --[[if Config.Debug then print("^5Debug^7: ^2Crafting check ^7'^6"..QBCore.Shared.Items[k].label.." ^7(^2x^6"..v.."^7)' ^2found^7") end ]]
-		end
-	end
-	for k, v in pairs(testtable) do
-		if not v then hasitem = false --[[if Config.Debug then print("^5Debug^7: ^2Crafting check ^7'^6"..QBCore.Shared.Items[k].label.."^7' ^1NOT ^2found^7") end]] end
-	end
-	Wait(0)
-	if hasanyitem ~= nil then hasitem = false end
-	if hasitem then cb(true) else cb(false) end
-end)
-
-QBCore.Functions.CreateCallback('jim-mining:ItemCheck', function(source, cb, item, cost)
-	local src = source
-	local Player = QBCore.Functions.GetPlayer(src)
-	local hasitem = false
-	if Player.Functions.GetItemByName(item) then if Player.Functions.GetItemByName(item).amount >= cost then hasitem = true end end
-	cb(hasitem)
-end)
-
 ---Crafting
 RegisterServerEvent('jim-mining:GetItem', function(data)
 	local src = source
@@ -115,15 +87,62 @@ end)
 RegisterNetEvent('jim-mining:server:toggleItem', function(give, item, amount)
 	local src = source
 	if give == 0 or give == false then
-		if QBCore.Functions.GetPlayer(src).Functions.RemoveItem(item, amount or 1) then
-			TriggerClientEvent('inventory:client:ItemBox', src, QBCore.Shared.Items[item], "remove", amount or 1)
-		end
+		if HasItem(src, item, amount or 1) then -- check if you still have the item
+			if QBCore.Functions.GetPlayer(src).Functions.RemoveItem(item, amount or 1) then
+				TriggerClientEvent('inventory:client:ItemBox', src, QBCore.Shared.Items[item], "remove", amount or 1)
+			end
+		else TriggerEvent("jim-mining:server:DupeWarn", item, src) end -- if not boot the player
 	else
 		if QBCore.Functions.GetPlayer(src).Functions.AddItem(item, amount or 1) then
 			TriggerClientEvent('inventory:client:ItemBox', src, QBCore.Shared.Items[item], "add", amount or 1)
 		end
 	end
 end)
+
+RegisterNetEvent("jim-mining:server:DupeWarn", function(item, newsrc)
+	local src = newsrc or source
+	local P = QBCore.Functions.GetPlayer(src)
+	print("^5DupeWarn: ^1"..P.PlayerData.charinfo.firstname.." "..P.PlayerData.charinfo.lastname.."^7(^1"..tostring(src).."^7) ^2Tried to remove item ^7('^3"..item.."^7')^2 but it wasn't there^7")
+	DropPlayer(src, "Kicked for attempting to duplicate items")
+	print("^5DupeWarn: ^1"..P.PlayerData.charinfo.firstname.." "..P.PlayerData.charinfo.lastname.."^7(^1"..tostring(src).."^7) ^2Dropped from server for item duplicating^7")
+end)
+
+function HasItem(source, items, amount)
+    local Player = QBCore.Functions.GetPlayer(source)
+    if not Player then return false end
+    local isTable = type(items) == 'table'
+    local isArray = isTable and table.type(items) == 'array' or false
+    local totalItems = #items
+    local count = 0
+    local kvIndex = 2
+    if isTable and not isArray then
+        totalItems = 0
+        for _ in pairs(items) do totalItems += 1 end
+        kvIndex = 1
+    end
+    if isTable then
+	if Config.Debug then print("^5Debug^7: ^3HasItem^7: ^2Checking if player^7(^6"..source.."^7)^2 has items^7") end
+        for k, v in pairs(items) do
+            local itemKV = {k, v}
+            local item = Player.Functions.GetItemByName(itemKV[kvIndex])
+            if item and ((amount and item.amount >= amount) or (not isArray and item.amount >= v) or (not amount and isArray)) then
+                count += 1
+            end
+        end
+        if count == totalItems then
+			if Config.Debug then print("^5Debug^7: ^3HasItem^7: ^2Items FOUND^7") end
+            return true
+        end
+    else -- Single item as stringHasItem(v, 1)
+		if Config.Debug then print("^5Debug^7: ^3HasItem^7: ^2Checking if player^7(^6"..source.."^7)^2 has items^7") end
+		local item = Player.Functions.GetItemByName(items)
+        if item and (not amount or (item and amount and item.amount >= amount)) then
+            return true
+        end
+    end
+	if Config.Debug then print("^5Debug^7: ^3HasItem^7: ^2Items Not FOUND^7") end
+    return false
+end
 
 AddEventHandler('onResourceStart', function(resource) if GetCurrentResourceName() ~= resource then return end
 	for k, v in pairs(Config.SellItems) do if not QBCore.Shared.Items[k] then print("Selling: Missing Item from QBCore.Shared.Items: '"..k.."'") end end

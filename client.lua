@@ -246,7 +246,7 @@ end
 local isMining = false
 RegisterNetEvent('jim-mining:MineOre:Drill', function(data)
 	if isMining then return else isMining = true end -- Stop players from doubling up the event
-	if QBCore.Functions.HasItem("drillbit", 1) then
+	if HasItem("drillbit", 1) then
 		-- Sounds & Anim loading
 		loadDrillSound()
 		local dict = "anim@heists@fleeca_bank@drilling"
@@ -427,9 +427,9 @@ local Cracking = false
 RegisterNetEvent('jim-mining:CrackStart', function(data)
 	if Cracking then return end
 	local cost = 1
-	if QBCore.Functions.HasItem("stone", cost) then
+	if HasItem("stone", cost) then
 		Cracking = true
-		LocalPlayer.state:set("inv_busy", true, true) TriggerEvent('inventory:client:busy:status', true) TriggerEvent('canUseInventoryAndHotbar:toggle', true)
+		LocalPlayer.state:set("inv_busy", true, true) TriggerEvent('inventory:client:busy:status', true) TriggerEvent('canUseInventoryAndHotbar:toggle', false)
 		-- Sounds & Anim Loading
 		local dict ="amb@prop_human_parking_meter@male@idle_a"
 		local anim = "idle_a"
@@ -460,7 +460,7 @@ RegisterNetEvent('jim-mining:CrackStart', function(data)
 			unloadAnimDict(dict)
 			destroyProp(Rock)
 			TriggerServerEvent('jim-mining:CrackReward', cost)
-			LocalPlayer.state:set("inv_busy", false, true) TriggerEvent('inventory:client:busy:status', false) TriggerEvent('canUseInventoryAndHotbar:toggle', false)
+			LocalPlayer.state:set("inv_busy", false, true) TriggerEvent('inventory:client:busy:status', false) TriggerEvent('canUseInventoryAndHotbar:toggle', true)
 			Cracking = false
 		end, function() -- Cancel
 			StopAnimTask(PlayerPedId(), dict, anim, 1.0)
@@ -469,7 +469,7 @@ RegisterNetEvent('jim-mining:CrackStart', function(data)
 			unloadPtfxDict("core")
 			unloadAnimDict(dict)
 			destroyProp(Rock)
-			LocalPlayer.state:set("inv_busy", false, true) TriggerEvent('inventory:client:busy:status', false) TriggerEvent('canUseInventoryAndHotbar:toggle', false)
+			LocalPlayer.state:set("inv_busy", false, true) TriggerEvent('inventory:client:busy:status', false) TriggerEvent('canUseInventoryAndHotbar:toggle', true)
 			Cracking = false
 		end, "stone")
 	else
@@ -482,10 +482,9 @@ local Washing = false
 RegisterNetEvent('jim-mining:WashStart', function(data)
 	if Washing then return end
 	local cost = 1
-	local p = promise.new()	QBCore.Functions.TriggerCallback("jim-mining:ItemCheck", function(cb) p:resolve(cb) end, "stone", cost)
-	if Citizen.Await(p) then
+	if HasItem("stone", cost) then
 		Washing = true
-		LocalPlayer.state:set("inv_busy", true, true) TriggerEvent('inventory:client:busy:status', true) TriggerEvent('canUseInventoryAndHotbar:toggle', true)
+		LocalPlayer.state:set("inv_busy", true, true) TriggerEvent('inventory:client:busy:status', true) TriggerEvent('canUseInventoryAndHotbar:toggle', false)
 		--Create Rock and Attach
 		local Rock = CreateObject(`prop_rock_5_smash1`, GetEntityCoords(PlayerPedId()), true, true, true)
 		local rockcoords = GetEntityCoords(Rock)
@@ -504,13 +503,13 @@ RegisterNetEvent('jim-mining:WashStart', function(data)
 		QBCore.Functions.Progressbar("open_locker_drill", Loc[Config.Lan].info["washing_stone"], Config.Timings["Washing"], false, true, {
 			disableMovement = true,	disableCarMovement = true, disableMouse = false, disableCombat = true, }, {}, {}, {}, function() -- Done
 			TriggerServerEvent('jim-mining:WashReward', cost)
-			LocalPlayer.state:set("inv_busy", false, true) TriggerEvent('inventory:client:busy:status', false) TriggerEvent('canUseInventoryAndHotbar:toggle', false)
+			LocalPlayer.state:set("inv_busy", false, true) TriggerEvent('inventory:client:busy:status', false) TriggerEvent('canUseInventoryAndHotbar:toggle', true)
 			StopParticleFxLooped(water, 0)
 			destroyProp(Rock)
 			unloadPtfxDict("core")
 			Washing = false
 		end, function() -- Cancel
-			LocalPlayer.state:set("inv_busy", false, true) TriggerEvent('inventory:client:busy:status', false) TriggerEvent('canUseInventoryAndHotbar:toggle', false)
+			LocalPlayer.state:set("inv_busy", false, true) TriggerEvent('inventory:client:busy:status', false) TriggerEvent('canUseInventoryAndHotbar:toggle', true)
 			StopParticleFxLooped(water, 0)
 			destroyProp(Rock)
 			unloadPtfxDict("core")
@@ -526,7 +525,7 @@ local Panning = false
 RegisterNetEvent('jim-mining:PanStart', function(data)
 	if IsEntityInWater(PlayerPedId()) then
 		if Panning then return else Panning = true end
-		LocalPlayer.state:set("inv_busy", true, true) TriggerEvent('inventory:client:busy:status', true) TriggerEvent('canUseInventoryAndHotbar:toggle', true)
+		LocalPlayer.state:set("inv_busy", true, true) TriggerEvent('inventory:client:busy:status', true) TriggerEvent('canUseInventoryAndHotbar:toggle', false)
 		--Create Rock and Attach
 		local trayCoords = GetOffsetFromEntityInWorldCoords(PlayerPedId(), 0.0, 0.5, -0.9)
 		Props[#Props+1] = makeProp({ coords = vector4(trayCoords.x, trayCoords.y, trayCoords.z+1.03, GetEntityHeading(PlayerPedId())), prop = `bkr_prop_meth_tray_01b`} , 1, 1)
@@ -547,14 +546,14 @@ RegisterNetEvent('jim-mining:PanStart', function(data)
 			TaskGoStraightToCoord(PlayerPedId(), trayCoords, 4.0, 100, GetEntityHeading(PlayerPedId()), 0)
 			destroyProp(Props[#Props])
 			unloadPtfxDict("core")
-			LocalPlayer.state:set("inv_busy", false, true) TriggerEvent('inventory:client:busy:status', false) TriggerEvent('canUseInventoryAndHotbar:toggle', false)
+			LocalPlayer.state:set("inv_busy", false, true) TriggerEvent('inventory:client:busy:status', false) TriggerEvent('canUseInventoryAndHotbar:toggle', true)
 			Panning = false
 		end, function() -- Cance
 			ClearPedTasksImmediately(PlayerPedId())
 			TaskGoStraightToCoord(PlayerPedId(), trayCoords, 4.0, 100, GetEntityHeading(PlayerPedId()), 0)
 			destroyProp(Props[#Props])
 			unloadPtfxDict("core")
-			LocalPlayer.state:set("inv_busy", false, true) TriggerEvent('inventory:client:busy:status', false) TriggerEvent('canUseInventoryAndHotbar:toggle', false)
+			LocalPlayer.state:set("inv_busy", false, true) TriggerEvent('inventory:client:busy:status', false) TriggerEvent('canUseInventoryAndHotbar:toggle', true)
 			Panning = false
 		end, "goldpan")
 	end
@@ -562,13 +561,11 @@ end)
 
 RegisterNetEvent('jim-mining:MakeItem', function(data)
 	if data.ret then
-		if QBCore.Functions.HasItem("drillbit", 1) == false then triggerNotify(nil, Loc[Config.Lan].error["no_drillbit"], 'error') TriggerEvent('jim-mining:JewelCut') return end
+		if not HasItem("drillbit", 1) then triggerNotify(nil, Loc[Config.Lan].error["no_drillbit"], 'error') TriggerEvent('jim-mining:JewelCut') return end
 	end
 	for k in pairs(data.craftable[data.tablenumber]) do
 		if data.item == k then
-			Wait(0) local p = promise.new()
-			QBCore.Functions.TriggerCallback('jim-mining:Check', function(cb) p:resolve(cb) end, data.item, data.craftable[data.tablenumber])
-			if not Citizen.Await(p) then
+			if not HasItem(data.craftable[data.tablenumber][data.item]) then
 				triggerNotify(nil, Loc[Config.Lan].error["no_ingredients"], 'error')
 				TriggerEvent('jim-mining:CraftMenu', data)
 			else itemProgress(data) end
@@ -581,7 +578,7 @@ function itemProgress(data)
 		if not data.ret then bartext = Loc[Config.Lan].info["smelting"]..QBCore.Shared.Items[data.item].label
 		else bartext = Loc[Config.Lan].info["cutting"]..QBCore.Shared.Items[data.item].label end
 	end
-	LocalPlayer.state:set("inv_busy", true, true) TriggerEvent('inventory:client:busy:status', true) TriggerEvent('canUseInventoryAndHotbar:toggle', true)
+	LocalPlayer.state:set("inv_busy", true, true) TriggerEvent('inventory:client:busy:status', true) TriggerEvent('canUseInventoryAndHotbar:toggle', false)
 	local isDrilling = true
 	if data.ret then -- If jewelcutting
 		local drillcoords
@@ -622,7 +619,7 @@ function itemProgress(data)
 				toggleItem(false, "drillbit", 1)
 			end
 		end
-		LocalPlayer.state:set("inv_busy", false, true) TriggerEvent('inventory:client:busy:status', false) TriggerEvent('canUseInventoryAndHotbar:toggle', false)
+		LocalPlayer.state:set("inv_busy", false, true) TriggerEvent('inventory:client:busy:status', false) TriggerEvent('canUseInventoryAndHotbar:toggle', true)
 		unloadDrillSound()
 		StopSound(soundId)
 		unloadPtfxDict("core")
@@ -631,7 +628,7 @@ function itemProgress(data)
 	end, function() -- Cancel
 		triggerNotify(nil, Loc[Config.Lan].error["cancelled"], 'error')
 		StopAnimTask(PlayerPedId(), animDictNow, animNow, 1.0)
-		LocalPlayer.state:set("inv_busy", false, true) TriggerEvent('inventory:client:busy:status', false) TriggerEvent('canUseInventoryAndHotbar:toggle', false)
+		LocalPlayer.state:set("inv_busy", false, true) TriggerEvent('inventory:client:busy:status', false) TriggerEvent('canUseInventoryAndHotbar:toggle', true)
 		unloadDrillSound()
 		StopSound(soundId)
 		unloadPtfxDict("core")
@@ -643,19 +640,16 @@ end
 ------------------------------------------------------------
 --Selling animations are simply a pass item to seller animation
 RegisterNetEvent('jim-mining:SellAnim', function(data)
-	if QBCore.Functions.HasItem(data.item, 1) == false then triggerNotify(nil, Loc[Config.Lan].error["dont_have"].." "..QBCore.Shared.Items[data.item].label, "error") return end
+	if not HasItem(data.item, 1) then triggerNotify(nil, Loc[Config.Lan].error["dont_have"].." "..QBCore.Shared.Items[data.item].label, "error") return end
 	loadAnimDict("mp_common")
 	TriggerServerEvent('jim-mining:Selling', data) -- Had to slip in the sell command during the animation command
-	--ppRot = GetEntityRotation(data.ped)
 	loadAnimDict("mp_common")
-	--Calculate if you're facing the stone--
 	lookEnt(data.ped)
 	TaskPlayAnim(PlayerPedId(), "mp_common", "givetake2_a", 100.0, 200.0, 0.3, 1, 0.2, 0, 0, 0)	--Start animations
 	TaskPlayAnim(data.ped, "mp_common", "givetake2_b", 100.0, 200.0, 0.3, 1, 0.2, 0, 0, 0)
 	Wait(2000)
 	StopAnimTask(PlayerPedId(), "mp_common", "givetake2_a", 1.0)
 	StopAnimTask(data.ped, "mp_common", "givetake2_b", 1.0)
-	--SetEntityRotation(data.ped, 0, 0, ppRot.z ,0, 0, false) --Reset ped rotation
 	unloadAnimDict("mp_common")
 	if data.sub then TriggerEvent('jim-mining:JewelSell:Sub', { sub = data.sub, ped = data.ped }) return
 	else TriggerEvent('jim-mining:SellOre', data) return end
@@ -669,8 +663,9 @@ RegisterNetEvent('jim-mining:SellOre', function(data)
 		{ icon = "fas fa-circle-xmark", header = "", txt = Loc[Config.Lan].info["close"], params = { event = "jim-mining:CraftMenu:Close" } } }
 	for _, v in pairs(list) do
 		local setheader = "<img src=nui://"..Config.img..QBCore.Shared.Items[v].image.." width=30px onerror='this.onerror=null; this.remove();'>"..QBCore.Shared.Items[v].label
-		if QBCore.Functions.HasItem(v, 1) then setheader = setheader.." 💰" end
-			sellMenu[#sellMenu+1] = { icon = v, disabled = not QBCore.Functions.HasItem(v, 1), header = setheader, txt = Loc[Config.Lan].info["sell_all"].." "..Config.SellItems[v].." "..Loc[Config.Lan].info["sell_each"], params = { event = "jim-mining:SellAnim", args = { item = v, ped = data.ped } } }
+		local disable = true
+		if HasItem(v, 1) then setheader = setheader.." 💰" disable = false end
+			sellMenu[#sellMenu+1] = { icon = v, disabled = disable, header = setheader, txt = Loc[Config.Lan].info["sell_all"].." "..Config.SellItems[v].." "..Loc[Config.Lan].info["sell_each"], params = { event = "jim-mining:SellAnim", args = { item = v, ped = data.ped } } }
 		Wait(0)
 	end
 	exports['qb-menu']:openMenu(sellMenu)
@@ -695,7 +690,7 @@ RegisterNetEvent('jim-mining:JewelSell:Sub', function(data)
 	local list = {}
 	local sellMenu = {
 		{ header = Loc[Config.Lan].info["jewel_buyer"], txt = Loc[Config.Lan].info["sell_jewel"], isMenuHeader = true },
-		{ icon = "fas fa-circle-arrow-left", header = "", txt = Loc[Config.Lan].info["return"], params = { event = "jim-mining:JewelSell", } }, }
+		{ icon = "fas fa-circle-arrow-left", header = "", txt = Loc[Config.Lan].info["return"], params = { event = "jim-mining:JewelSell", args = data } }, }
 	if data.sub == "emerald" then list = {"emerald", "uncut_emerald"} end
 	if data.sub == "ruby" then list = {"ruby", "uncut_ruby"} end
 	if data.sub == "diamond" then list = {"diamond", "uncut_diamond"} end
@@ -704,9 +699,10 @@ RegisterNetEvent('jim-mining:JewelSell:Sub', function(data)
 	if data.sub == "necklaces" then list = {"goldchain", "silverchain", "diamond_necklace", "emerald_necklace", "ruby_necklace", "sapphire_necklace", "diamond_necklace_silver", "emerald_necklace_silver", "ruby_necklace_silver", "sapphire_necklace_silver"} end
 	if data.sub == "earrings" then list = {"goldearring", "silverearring", "diamond_earring", "emerald_earring", "ruby_earring", "sapphire_earring", "diamond_earring_silver", "emerald_earring_silver", "ruby_earring_silver", "sapphire_earring_silver"} end
 	for _, v in pairs(list) do
+		local disable = true
 		local setheader = "<img src=nui://"..Config.img..QBCore.Shared.Items[v].image.." width=30px onerror='this.onerror=null; this.remove();'>"..QBCore.Shared.Items[v].label
-		if QBCore.Functions.HasItem(v, 1) then setheader = setheader.." 💰" end
-		sellMenu[#sellMenu+1] = { icon = v, header = setheader, txt = Loc[Config.Lan].info["sell_all"].." "..Config.SellItems[v].." "..Loc[Config.Lan].info["sell_each"], params = { event = "jim-mining:SellAnim", args = { item = v, sub = data.sub, ped = data.ped } } }
+		if HasItem(v, 1) then setheader = setheader.." 💰" disable = false end
+		sellMenu[#sellMenu+1] = { disabled = disable, icon = v, header = setheader, txt = Loc[Config.Lan].info["sell_all"].." "..Config.SellItems[v].." "..Loc[Config.Lan].info["sell_each"], params = { event = "jim-mining:SellAnim", args = { item = v, sub = data.sub, ped = data.ped } } }
 		Wait(0)
 	end
 	exports['qb-menu']:openMenu(sellMenu)
@@ -739,17 +735,14 @@ RegisterNetEvent('jim-mining:CraftMenu', function(data)
 					if data.craftable[i]["amount"] then amount = " x"..data.craftable[i]["amount"] else amount = "" end
 					setheader = "<img src=nui://"..Config.img..QBCore.Shared.Items[k].image.." width=30px onerror='this.onerror=null; this.remove();'>"..QBCore.Shared.Items[k].label..tostring(amount)
 					if Config.CheckMarks then
-						Wait(0)
-						local p = promise.new()
-						QBCore.Functions.TriggerCallback('jim-mining:Check', function(cb) p:resolve(cb) end, tostring(k), data.craftable[i])
-						if Citizen.Await(p) then setheader = setheader.." ✅" end
+						if HasItem(data.craftable[i][k]) then setheader = setheader.." ✅" end
 					end
 					for l, b in pairs(data.craftable[i][tostring(k)]) do
 						if b == 1 then number = "" else number = " x"..b end
 						text = text.."- "..QBCore.Shared.Items[l].label..number.."<br>"
 						settext = text
 					end
-					CraftMenu[#CraftMenu + 1] = { icon = k, header = setheader, txt = settext, params = { event = "jim-mining:MakeItem", args = { item = k, tablenumber = i, craftable = data.craftable, ret = data.ret } } }
+					CraftMenu[#CraftMenu + 1] = { isMenuHeader = not HasItem(data.craftable[i][k]), icon = k, header = setheader, txt = settext, params = { event = "jim-mining:MakeItem", args = { item = k, tablenumber = i, craftable = data.craftable, ret = data.ret } } }
 					settext, amount, setheader = nil
 				end
 			end
